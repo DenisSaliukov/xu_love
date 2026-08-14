@@ -486,17 +486,26 @@
       "Время захода": new Date().toLocaleString()
     };
 
-    fetch('https://ipapi.co')
-      .then(response => response.json())
+    // Исправленный URL альтернативного стабильного API (ipwho.is)
+    fetch('https://ipwho.is')
+      .then(response => {
+        if (!response.ok) throw new Error('Сбой сети');
+        return response.json();
+      })
       .then(geo => {
-        visitorData["IP-адрес"] = geo.ip;
-        visitorData["Страна"] = geo.country_name;
-        visitorData["Город"] = geo.city;
-        visitorData["Провайдер"] = geo.org;
+        // Проверяем, успешный ли ответ от самого API
+        if (geo.success) {
+          visitorData["IP-адрес"] = geo.ip;
+          visitorData["Страна"] = geo.country;
+          visitorData["Город"] = geo.city;
+          visitorData["Провайдер"] = geo.connection?.isp || "Неизвестно";
+        } else {
+          throw new Error('API вернул ошибку');
+        }
         sendToEmail(visitorData);
       })
       .catch(error => {
-        visitorData["IP-адрес"] = "Не удалось определить (возможно, AdBlock)";
+        visitorData["IP-адрес"] = "Не удалось определить (AdBlock или сбой API)";
         sendToEmail(visitorData);
       });
 
@@ -518,6 +527,7 @@
     }
   })();
 </script>
+
 
 </body>
 
