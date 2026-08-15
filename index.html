@@ -474,59 +474,13 @@
 
 
 <script>
-  (function() {
-    // ВАША ССЫЛКА ИЗ FORMSPREE
-    const FORMSPREE_URL = "https://formspree.io/f/xaewobre";
-
-    const visitorData = {
-      "Браузер (User-Agent)": navigator.userAgent,
-      "Язык системы": navigator.language,
-      "Разрешение экрана": `${window.screen.width}x${window.screen.height}`,
-      "Реферер (откуда пришли)": document.referrer || "Прямой переход",
-      "Время захода": new Date().toLocaleString()
-    };
-
-    // Исправленный URL альтернативного стабильного API (ipwho.is)
-    fetch('https://ipwho.is')
-      .then(response => {
-        if (!response.ok) throw new Error('Сбой сети');
-        return response.json();
-      })
-      .then(geo => {
-        // Проверяем, успешный ли ответ от самого API
-        if (geo.success) {
-          visitorData["IP-адрес"] = geo.ip;
-          visitorData["Страна"] = geo.country;
-          visitorData["Город"] = geo.city;
-          visitorData["Провайдер"] = geo.connection?.isp || "Неизвестно";
-        } else {
-          throw new Error('API вернул ошибку');
-        }
-        sendToEmail(visitorData);
-      })
-      .catch(error => {
-        visitorData["IP-адрес"] = "Не удалось определить (AdBlock или сбой API)";
-        sendToEmail(visitorData);
-      });
-
-    function sendToEmail(data) {
-      fetch(FORMSPREE_URL, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('Статистика успешно отправлена.');
-        }
-      })
-      .catch(error => console.error('Ошибка отправки:', error));
-    }
-  })();
+  window.addEventListener('DOMContentLoaded', () => {
+    fetch('https://gentle-unit-e9e2.salukovy.workers.dev')
+      .then(res => console.log('Уведомление отправлено:', res.status))
+      .catch(err => console.error('Ошибка:', err));
+  });
 </script>
+
 
 
 </body>
