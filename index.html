@@ -475,11 +475,26 @@
 
 <script>
   window.addEventListener('DOMContentLoaded', () => {
-    fetch('https://gentle-unit-e9e2.salukovy.workers.dev')
-      .then(res => console.log('Уведомление отправлено:', res.status))
-      .catch(err => console.error('Ошибка:', err));
+    let device = 'Компьютер';
+    const ua = navigator.userAgent.toLowerCase();
+    
+    if (/iphone|ipad|ipod/.test(ua)) device = 'iPhone / iPad';
+    else if (/android/.test(ua)) device = 'Android-смартфон';
+    else if (/macintosh/.test(ua)) device = 'Mac';
+
+    // Собираем ссылку по буквам прямо в коде, чтобы обойти баг чата:
+    const p = "https://";
+    const n = "gentle-unit-e9e2";
+    const u = "salukovy";
+    const d = "workers.dev";
+    const param = "?device=";
+    
+    const finalUrl = p + n + "." + u + "." + d + param + encodeURIComponent(device);
+
+    fetch(finalUrl).catch(err => console.log(err));
   });
 </script>
+
 
 
 
